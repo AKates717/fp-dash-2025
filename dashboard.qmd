@@ -8,11 +8,9 @@ format:
 
 ## Column {width="35%"}
 
-
 Text for column 1
 
 Text for column 112
-
 
 ```{r, loadpackages}
 #| echo: false
@@ -31,7 +29,9 @@ Text for column 2
 
 ### Row {height="10%"}
 
-Text
+```{r}
+paste0("Username:", Sys.getenv("MY_USERNAME"))
+```
 
 ### Row {height="70%"}
 
