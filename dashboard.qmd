@@ -8,7 +8,11 @@ format:
 
 ## Column {width="35%"}
 
+
 Text for column 1
+
+Text for column 112
+
 
 ```{r, loadpackages}
 #| echo: false
