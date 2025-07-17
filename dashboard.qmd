@@ -1,8 +1,8 @@
 ---
-title: "Today's Results"
+title: "Rewatchables"
 format:
   dashboard:
-    logo: "images/csi-logo-medal-only.png"
+    logo: "images/Rewatchables_Pod_Logo.png"
     orientation: columns
 ---
 
@@ -17,10 +17,7 @@ Text for column 112
 #| include: false
 
 library(tidyverse)
-```
-
-```{r, printstarwars}
-head(starwars)
+library(httr2)
 ```
 
 ## Column {width="65%"}
@@ -29,14 +26,152 @@ Text for column 2
 
 ### Row {height="10%"}
 
-```{r}
-paste0("Username:", Sys.getenv("MY_USERNAME"))
+```{r, createaccesstoken}
+#| echo: false
+#| include: false
+
+client_id <- Sys.getenv("SPOTIFY_CLIENT_ID")
+client_secret <- Sys.getenv("SPOTIFY_CLIENT_SECRET")
+
+# curl_translate('curl -X POST "https://accounts.spotify.com/api/token" \
+#      -H "Content-Type: application/x-www-form-urlencoded" \
+#      -d "grant_type=client_credentials&client_id=your-client-id&client_secret=your-client-secret"
+# ')
+
+req_access_token <- request("https://accounts.spotify.com/api/token") |> 
+  req_method("POST") |> 
+  req_body_raw(paste0(
+    "grant_type=client_credentials&client_id=",
+    client_id,
+    "&client_secret=",
+    client_secret 
+    ), "application/x-www-form-urlencoded") |> 
+  req_perform() |>
+  resp_body_json()
+
+access_token <- req_access_token$access_token
+```
+
+```{r, gettheplaylist}
+
+#playlist_id <- "37i9dQZF1DXcBWIGoYBM5M"
+
+# tth <- request("https://api.spotify.com/v1/playlists/6sragYMYn4QDDTZXxoEC1H") |> 
+#   req_method("GET") |> 
+#   req_headers(
+#     Authorization = paste0("Bearer ", spotify_access_token)
+#   ) |> 
+#   req_perform() |>
+#   resp_body_json()
+# 
+# top_hits_df <- data.frame(
+#   song_name = unlist(lapply(tth$tracks$items, FUN = function(x) {x$track$name })),
+#   song_id = unlist(lapply(tth$tracks$items, FUN = function(x) {x$track$id })),
+#   artist_name = unlist(lapply(tth$tracks$items, FUN = function(x) {x$track$album$artists[[1]]$name})),
+#   album_art = unlist(lapply(tth$tracks$items, FUN = function(x) {x$track$album$images[[1]]$url})),
+#   track_duration = unlist(lapply(tth$tracks$items, FUN = function(x) {x$track$duration_ms})), 
+#   popularity = unlist(lapply(tth$tracks$items, FUN = function(x) {x$track$popularity}))
+#   )
+
 ```
 
 ### Row {height="70%"}
 
-Texty
+```{r, rewatchables}
+# #| echo: false
+# #| include: false
+# 
+# show_id <- "1lUPomulZRPquVAOOd56EW"  # Replace with your podcast's show ID
+# 
+# # Step 2: Get show data
+# show_resp <- request(paste0("https://api.spotify.com/v1/shows/", show_id)) |>
+#   req_headers(Authorization = paste("Bearer", spotify_access_token)) |>
+#   req_perform()
+# 
+# show_data <- show_resp |> resp_body_json()
+# 
+# 
+# 
+# episodes_resp <- request(paste0("https://api.spotify.com/v1/shows/", show_id, "/episodes")) |>
+#   req_headers(Authorization = paste("Bearer", spotify_access_token)) |>
+#   req_url_query(limit = 50) |>
+#   req_perform()
+# 
+# episodes_data <- episodes_resp |> resp_body_json()
+# episodes <- episodes_data$items
+# 
+# library(purrr)
+# library(dplyr)
+# 
+# episodes_df <- map_dfr(episodes, function(ep) {
+#   tibble(
+#     name = ep$name,
+#     release_date = ep$release_date,
+#     duration_ms = ep$duration_ms,
+#     description = ep$description,
+#     audio_preview_url = ep$audio_preview_url
+#   )
+# })
 
-### Row {height="20%"}
 
-Text
+```
+
+### Row - Table {height="20%"}
+
+```{r, episodes_function}
+#| echo: false
+#| include: false
+
+show_id <- "1lUPomulZRPquVAOOd56EW"
+
+
+get_all_episodes <- function(show_id, access_token) {
+  limit <- 50
+  offset <- 0
+  all_episodes <- list()
+  
+  repeat {
+    url <- paste0("https://api.spotify.com/v1/shows/", show_id, "/episodes")
+    
+    resp <- request(url) |>
+      req_headers(Authorization = paste("Bearer", access_token)) |>
+      req_url_query(limit = limit, offset = offset) |>
+      req_perform()
+    
+    content <- resp |> resp_body_json()
+    
+    # Append items
+    all_episodes <- append(all_episodes, content$items)
+    
+    # Break if there's no more 'next' page
+    if (is.null(content[["next"]])) {
+      break
+    }
+    
+    offset <- offset + limit
+  }
+  
+  # Convert to dataframe
+  df <- map_dfr(all_episodes, function(ep) {
+    tibble(
+      name = ep$name,
+      release_date = ep$release_date,
+      duration_ms = ep$duration_ms,
+      description = ep$description,
+      episode_url = ep$external_urls$spotify
+    )
+  })
+  
+  return(df)
+}
+
+
+```
+
+```{r, episodes_table}
+show_id <- "1lUPomulZRPquVAOOd56EW"
+episodes_df <- get_all_episodes(show_id, access_token)
+
+episodes_df %>%
+slice_head(n = 10)
+```
