@@ -1,0 +1,15 @@
+{
+  "hash": "75446bd1d9bbd95bea246051cf25952c",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Rewatchables\"\nformat:\n  dashboard:\n    logo: \"images/Rewatchables_Pod_Logo.png\"\n    orientation: columns\n---\n\n\n\n\n## Column {width=\"35%\"}\n\nText for column 1\n\nText for column 112\n\n\n\n\n\n\n\n\n\n## Column {width=\"65%\"}\n\nText for column 2\n\n### Row {height=\"10%\"}\n\n\n\n\n\n\n::: {.cell}\n\n:::\n\n\n\n\n### Row {height=\"70%\"}\n\n\n\n\n::: {.cell}\n\n:::\n\n\n\n\n### Row - Table {height=\"20%\"}\n\n\n\n\n\n\n::: {.cell}\n::: {.cell-output .cell-output-stdout}\n\n```\n# A tibble: 10 × 5\n   name                         release_date duration_ms description episode_url\n   <chr>                        <chr>              <int> <chr>       <chr>      \n 1 ‘It’s Complicated’ With Bil… 2025-07-15       6476821 The Ringer… https://op…\n 2 'Jaws 2’ With Bill Simmons,… 2025-07-08       5768234 Just when … https://op…\n 3 ‘After Hours’ with Bill Sim… 2025-07-01       6300373 The Ringer… https://op…\n 4 ‘Die Hard With a Vengeance’… 2025-06-24       7750421 The Ringer… https://op…\n 5 'Marathon Man' With Bill Si… 2025-06-18       5618261 The Ringer… https://op…\n 6 ‘Working Girl’ With Bill Si… 2025-06-10       8120426 The Ringer… https://op…\n 7 ‘Out for Justice’ With Bill… 2025-06-03       6321258 Has anybod… https://op…\n 8 ‘Heaven Can Wait’ With Bill… 2025-05-27       6687317 The Ringer… https://op…\n 9 ‘Close Encounters of the Th… 2025-05-20       7571136 The Ringer… https://op…\n10 ‘Death Wish’ With Bill Simm… 2025-05-14       4698709 If the pol… https://op…\n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
